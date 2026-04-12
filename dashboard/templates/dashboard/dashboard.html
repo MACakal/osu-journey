@@ -1,14 +1,19 @@
-{% extends "dashboard/base.html" %}
-
-{% block title %}Player Profile{% endblock %}
+{% extends 'dashboard/base.html' %}
 
 {% block content %}
-    <h1>Player Profile</h1>
+<h1>Welcome back, {{ player.osu_username }}</h1>
+<p>Level {{ player.level }} · {{ player.xp }} XP · Baseline {{ player.skill_baseline }}★</p>
 
+<h2>Recent Plays</h2>
+{% for play in recent_plays %}
     <div>
-        <p><strong>Username:</strong> {{ player.osu_username }}</p>
-        <p><strong>Level:</strong> {{ player.level }}</p>
-        <p><strong>XP:</strong> {{ player.xp }}</p>
-        <p><strong>Skill Baseline:</strong> {{ player.skill_baseline }}</p>
+        <strong>{{ play.beatmap.title }}</strong>
+        [{{ play.beatmap.artist }}]
+        — {{ play.adjusted_star_rating }}★
+        — {{ play.accuracy|floatformat:2 }}%
+        {% if play.passed %}✓{% else %}✗{% endif %}
     </div>
+{% empty %}
+    <p>No plays found yet. Go play some maps!</p>
+{% endfor %}
 {% endblock %}

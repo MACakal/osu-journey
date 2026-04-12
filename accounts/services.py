@@ -36,3 +36,30 @@ def get_current_user(access_token):
     })
     response.raise_for_status()
     return response.json()
+
+def get_recent_plays(access_token, osu_id, limit=50):
+    response = requests.get(
+        f"{OSU_API_BASE}/users/{osu_id}/scores/recent",
+        headers={
+            'Authorization': f"Bearer {access_token}"
+        },
+        params={
+            'include_fails': 1,
+            'limit': limit,
+        }
+    )
+    response.raise_for_status()
+    return response.json()
+
+def get_top_plays(access_token, osu_id, limit=100):
+    response = requests.get(
+        f"{OSU_API_BASE}/users/{osu_id}/scores/best",
+        headers={
+            'Authorization': f"Bearer {access_token}"
+        },
+        params={
+            'limit': limit,
+        }
+    )
+    response.raise_for_status()
+    return response.json()
