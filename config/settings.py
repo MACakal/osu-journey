@@ -36,6 +36,11 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+OSU_CLIENT_ID = config('OSU_CLIENT_ID')
+OSU_CLIENT_SECRET = config('OSU_CLIENT_SECRET')
+OSU_REDIRECT_URI = config('OSU_REDIRECT_URI')
+
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
