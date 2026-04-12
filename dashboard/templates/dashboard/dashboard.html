@@ -1,4 +1,14 @@
-{{ player.osu_username }}
-{{ player.level }}
-{{ player.xp }}
-{{ player.skill_baseline }}
+{% extends "dashboard/base.html" %}
+
+{% block title %}Player Profile{% endblock %}
+
+{% block content %}
+    <h1>Player Profile</h1>
+
+    <div>
+        <p><strong>Username:</strong> {{ player.osu_username }}</p>
+        <p><strong>Level:</strong> {{ player.level }}</p>
+        <p><strong>XP:</strong> {{ player.xp }}</p>
+        <p><strong>Skill Baseline:</strong> {{ player.skill_baseline }}</p>
+    </div>
+{% endblock %}

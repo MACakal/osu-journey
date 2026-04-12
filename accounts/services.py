@@ -12,6 +12,7 @@ def get_auth_url():
         'redirect_uri': settings.OSU_REDIRECT_URI,
         'response_type': 'code',
         'scope': 'identify public',
+        'prompt': 'none',
     }
     param_string = '&'.join([f"{k}={v}" for k, v in params.items()])
     return f"{OSU_AUTH_URL}?{param_string}"

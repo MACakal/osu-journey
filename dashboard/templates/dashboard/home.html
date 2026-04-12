@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>osu!journey</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'dashboard/css/home.css' %}">
+</head>
+<body>
+
+    <section class="hero">
+        <div class="hero-tag">Free &amp; open source</div>
+        <h1>Your <span>osu!</span> journey<br>starts here</h1>
+        <p>A progression companion that gives osu purpose quests, regions, and milestones built around your skill level.</p>
+        <a href="{% url 'accounts:login' %}" class="btn-primary">Login with osu!</a>
+    </section>
+
+    <section class="features">
+        <p class="features-label">What osu!journey gives you</p>
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3>Daily &amp; weekly quests</h3>
+                <p>Short-term goals tailored to your skill level. Push your limits, stay consistent, or explore new mappers — quests guide every session.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Regions &amp; boss challenges</h3>
+                <p>Progress through structured skill stages from Initiation to Mastery. Each region ends with a boss challenge that tests everything you've learned.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Builds &amp; XP</h3>
+                <p>Create a custom build that matches your playstyle — stack modifiers for speed, accuracy, or specific mods and earn bonus XP for playing your way.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="bottom-bar">
+        <span>Built for the osu! community</span>
+        <span>·</span>
+        <a href="https://github.com/MACakal/osu-journey">GitHub</a>
+        <span>·</span>
+        <span>Free forever</span>
+    </div>
+</body>
+</html>
