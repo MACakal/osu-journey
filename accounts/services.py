@@ -9,7 +9,7 @@ OSU_AUTH_URL = 'https://osu.ppy.sh/oauth/authorize'
 def get_auth_url():
     params = {
         'client_id': settings.OSU_CLIENT_ID,
-        'redirect_uri': settings.OSU_REDIRECT_URI,
+        'redirect_url': settings.OSU_REDIRECT_URL,
         'response_type': 'code',
         'scope': 'identify public',
         'prompt': 'none',
@@ -24,7 +24,7 @@ def exchange_code(code):
         'client_secret': settings.OSU_CLIENT_SECRET,
         'code': code,
         'grant_type': 'authorization_code',
-        'redirect_uri': settings.OSU_REDIRECT_URI,
+        'redirect_url': settings.OSU_REDIRECT_URL,
     })
     response.raise_for_status()
     return response.json()
