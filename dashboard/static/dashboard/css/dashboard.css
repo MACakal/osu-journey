@@ -1,92 +1,170 @@
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    font-size: 1rem;
-    background: #0f1115;
-    color: #eaeaea;
-}
-
-.navbar {
-    position: sticky;
-    top: 0;
-    z-index: 100;
+.dash-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 2.5rem;
-    height: 68px;
-    background: #14161c;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    margin-bottom: 2rem;
 }
 
-.navbar-left {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
+.dash-header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.4rem;
 }
 
-.navbar-right {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
+.pink { color: #FF66AA; }
 
-.logo-text {
-    font-size: 1.25rem;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    text-decoration: none;
-}
-
-.logo-osu { color: #FF66AA; }
-.logo-journey { color: #eaeaea; }
-
-.nav-divider {
-    width: 1px;
-    height: 20px;
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.nav-link {
-    color: rgba(255, 255, 255, 0.55);
-    text-decoration: none;
+.dash-sub {
     font-size: 0.9rem;
-    font-weight: 500;
-    padding: 0.4rem 0.75rem;
+    color: rgba(255,255,255,0.4);
+}
+
+.section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 1rem;
+}
+
+.plays-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.play-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: #14161c;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    transition: border-color 0.15s;
+}
+
+.play-card:hover {
+    border-color: rgba(255,255,255,0.15);
+}
+
+.play-cover {
+    width: 56px;
+    height: 56px;
     border-radius: 6px;
-    transition: color 0.15s, background 0.15s;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #1e2028;
 }
 
-.nav-link:hover {
+.play-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.play-cover-placeholder {
+    width: 100%;
+    height: 100%;
+    background: #1e2028;
+}
+
+.play-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.play-title {
+    font-size: 0.95rem;
+    font-weight: 600;
     color: #fff;
-    background: rgba(255, 255, 255, 0.07);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.nav-link.active { color: #fff; }
+.play-sub {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.4);
+    margin-top: 0.2rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
-.btn-logout {
-    color: rgba(255, 255, 255, 0.5);
-    text-decoration: none;
+.play-tags {
+    display: flex;
+    gap: 0.35rem;
+    margin-top: 0.4rem;
+    flex-wrap: wrap;
+}
+
+.mod-tag {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 0.04em;
+}
+
+.play-stats {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
     font-size: 0.875rem;
-    font-weight: 500;
-    padding: 0.4rem 1rem;
-    border-radius: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    transition: all 0.15s;
 }
 
-.btn-logout:hover {
-    color: #fff;
-    border-color: rgba(255, 255, 255, 0.25);
-    background: rgba(255, 255, 255, 0.05);
+.play-grade {
+    font-size: 1.1rem;
+    font-weight: 700;
+    width: 28px;
+    text-align: center;
 }
 
-.container {
-    padding: 2.5rem;
-    max-width: 1100px;
-    margin: 0 auto;
+.grade-x  { color: #FFD700; }
+.grade-s  { color: #FFD700; }
+.grade-sh { color: #aef; }
+.grade-a  { color: #4CAF50; }
+.grade-b  { color: #378ADD; }
+.grade-c  { color: #EF9F27; }
+.grade-d  { color: #E24B4A; }
+.grade-f  { color: rgba(255,255,255,0.25); }
+
+.play-accuracy {
+    color: rgba(255,255,255,0.7);
+    min-width: 60px;
+    text-align: right;
+}
+
+.play-sr {
+    color: rgba(255,255,255,0.4);
+    min-width: 48px;
+    text-align: right;
+}
+
+.play-pp {
+    color: #FF66AA;
+    min-width: 56px;
+    text-align: right;
+    font-weight: 600;
+}
+
+.empty-state {
+    color: rgba(255,255,255,0.3);
+    font-size: 0.9rem;
+    padding: 2rem 0;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .play-stats {
+        gap: 0.6rem;
+    }
+    .play-pp {
+        display: none;
+    }
 }

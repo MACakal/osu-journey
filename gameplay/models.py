@@ -23,6 +23,9 @@ class Beatmap(models.Model):
     # timestamps
     created_at = models.DateTimeField(auto_now_add=True)
 
+    cover_url = models.URLField(max_length=500, blank=True, default='')
+    version = models.CharField(max_length=255, blank=True, default='')
+
     def __str__(self):
         return f"{self.artist} - {self.title} [{self.star_rating}★]"
 
@@ -40,6 +43,8 @@ class Play(models.Model):
     score = models.BigIntegerField()
     max_combo = models.IntegerField()
     passed = models.BooleanField()
+    rank = models.CharField(max_length=5, default='F')
+    pp = models.FloatField(null=True, blank=True)
 
     # mods stored as a list of strings e.g. ["HD", "DT"]
     mods = models.JSONField(default=list)

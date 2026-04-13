@@ -24,6 +24,8 @@ def sync_recent_plays(player, plays_data):
                 'ar': beatmap_data.get('ar', 0),
                 'od': beatmap_data.get('accuracy', 0),
                 'cs': beatmap_data.get('cs', 0),
+                'cover_url': beatmapset_data.get('covers', {}).get('card', ''),
+                'version': beatmap_data.get('version', ''),
             }
         )
 
@@ -49,7 +51,9 @@ def sync_recent_plays(player, plays_data):
             passed=play_data.get('passed', False),
             mods=mods,
             adjusted_star_rating=adjusted_sr,
-            played_at=play_data.get('ended_at') or timezone.now(),
+            played_at=play_data.get('ended_at') or play_data.get('created_at') or timezone.now(),
+            rank=play_data.get('rank', 'F'),
+            pp=play_data.get('pp'),
         )
         new_plays += 1
 
@@ -90,6 +94,8 @@ def sync_top_plays(player, plays_data):
                 'ar': beatmap_data.get('ar', 0),
                 'od': beatmap_data.get('accuracy', 0),
                 'cs': beatmap_data.get('cs', 0),
+                'cover_url': beatmapset_data.get('covers', {}).get('card', ''),
+                'version': beatmap_data.get('version', ''),
             }
         )
 
@@ -101,7 +107,7 @@ def sync_top_plays(player, plays_data):
         mods = [mod['acronym'] if isinstance(mod, dict) else mod for mod in raw_mods]
 
         adjusted_sr = play_data.get('difficulty_rating') or beatmap.star_rating
-
+        
         Play.objects.create(
             osu_score_id=score_id,
             player=player,
@@ -109,8 +115,10 @@ def sync_top_plays(player, plays_data):
             accuracy=play_data.get('accuracy', 0) * 100,
             score=play_data.get('total_score', 0),
             max_combo=play_data.get('max_combo', 0),
-            passed=play_data.get('passed', True),
+            passed=play_data.get('passed', False),
             mods=mods,
             adjusted_star_rating=adjusted_sr,
-            played_at=play_data.get('ended_at') or timezone.now(),
+            played_at=play_data.get('ended_at') or play_data.get('created_at') or timezone.now(),
+            rank=play_data.get('rank', 'F'),
+            pp=play_data.get('pp'),
         )
