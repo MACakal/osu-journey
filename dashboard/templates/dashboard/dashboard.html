@@ -20,13 +20,13 @@
 
 <div class="plays-list">
     {% for play in recent_plays %}
-    <div class="play-card">
+    <a href="https://osu.ppy.sh/beatmaps/{{ play.beatmap.beatmap_id }}" target="_blank" class="play-card">
         <div class="play-cover">
             {% if play.beatmap.cover_url %}
                 <img src="{{ play.beatmap.cover_url }}" alt="cover">
             {% else %}
                 <div class="play-cover-placeholder"></div>
-            {% endif %}
+            {% endif %} 
         </div>
         <div class="play-info">
             <div class="play-title">{{ play.beatmap.title }}</div>
@@ -45,7 +45,7 @@
                 <div class="play-pp">{{ play.pp|floatformat:0 }}pp</div>
             {% endif %}
         </div>
-    </div>
+    </a>
     {% empty %}
         <p class="empty-state">No plays found yet. Go play some maps!</p>
     {% endfor %}
