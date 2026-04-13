@@ -1,0 +1,53 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block title %}Top Plays — osu!journey{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'dashboard/css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="dash-header">
+    <div class="dash-header-left">
+        <h1>Top <span class="pink">Plays</span></h1>
+        <p class="dash-sub">Your top 100 plays by PP</p>
+    </div>
+</div>
+
+<div class="plays-list">
+    {% for play in plays %}
+    <a href="https://osu.ppy.sh/beatmaps/{{ play.beatmap.beatmap_id }}" target="_blank" class="play-card">
+        <div class="play-rank-number">#{{ forloop.counter }}</div>
+        <div class="play-cover">
+            {% if play.beatmap.cover_url %}
+                <img src="{{ play.beatmap.cover_url }}" alt="cover">
+            {% else %}
+                <div class="play-cover-placeholder"></div>
+            {% endif %}
+        </div>
+        <div class="play-info">
+            <div class="play-title">{{ play.beatmap.title }}</div>
+            <div class="play-sub">{{ play.beatmap.artist }} · {{ play.beatmap.version }} · {{ play.beatmap.mapper }}</div>
+            <div class="play-tags">
+                {% for mod in play.mods %}
+                    <span class="mod-tag">{{ mod }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="play-stats">
+            <div class="play-grade grade-{{ play.rank|lower }}">{{ play.rank }}</div>
+            <div class="play-accuracy">{{ play.accuracy|floatformat:2 }}%</div>
+            <div class="play-sr">{{ play.adjusted_star_rating|floatformat:2 }}★</div>
+            {% if play.pp %}
+                <div class="play-pp">{{ play.pp|floatformat:0 }}pp</div>
+            {% endif %}
+        </div>
+    </a>
+    {% empty %}
+        <p class="empty-state">No top plays found yet. Go play some maps!</p>
+    {% endfor %}
+</div>
+
+{% endblock %}

@@ -6,6 +6,9 @@ INVALID_COMBINATIONS = [
     frozenset({'DT', 'HT'}),
     frozenset({'NC', 'HT'}),
     frozenset({'DT', 'NC'}),
+    frozenset({'SD', 'PF'}),
+    frozenset({'NF', 'SD'}),
+    frozenset({'NF', 'PF'}),
 ]
 
 def normalize_mods(mods):
@@ -20,14 +23,6 @@ def is_valid_mod_combination(mods):
             return False
     return True
 
-def calculate_weighted_pp(plays):
-    sorted_plays = plays.filter(pp__isnull=False).order_by('-pp')
-    weighted_pp = sum(
-        play.pp * (0.95 ** i)
-        for i, play in enumerate(sorted_plays)
-    )
-    return round(weighted_pp, 2)
-
 def get_mod_leaderboard(mod_combination):
     if not is_valid_mod_combination(mod_combination):
         return None, 'Invalid mod combination'
@@ -40,9 +35,9 @@ def get_mod_leaderboard(mod_combination):
             player=player,
             passed=True,
             pp__isnull=False,
+            pp__gt=0,  # ignore zero PP plays
         )
 
-        # filter in Python since SQLite doesn't support JSONField contains
         if 'DT' in normalized:
             plays = [p for p in plays if 'DT' in p.mods or 'NC' in p.mods]
         else:
@@ -55,11 +50,17 @@ def get_mod_leaderboard(mod_combination):
         if not plays:
             continue
 
-        sorted_plays = sorted(plays, key=lambda p: p.pp or 0, reverse=True)
+        # cap at top 100 plays by PP, same as osu!
+        best_per_map = {}
+        for p in plays:
+            if p.beatmap_id not in best_per_map or p.pp > best_per_map[p.beatmap_id].pp:
+                best_per_map[p.beatmap_id] = p
+
+        sorted_plays = sorted(best_per_map.values(), key=lambda p: p.pp, reverse=True)[:100]
+
         weighted_pp = round(sum(
             p.pp * (0.95 ** i)
             for i, p in enumerate(sorted_plays)
-            if p.pp
         ), 2)
 
         if weighted_pp > 0:

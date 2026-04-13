@@ -57,9 +57,29 @@ def leaderboard(request):
         'results': results,
         'error': error,
         'selected_mods': mods,
-        'available_mods': ['EZ', 'NF', 'HT', 'HR', 'SD', 'PF', 'DT', 'HD', 'FI', 'FL'],
+        'available_mods': ['EZ', 'NF', 'HT', 'HR', 'SD', 'PF', 'DT', 'HD', 'FL'],
     }
     return render(request, 'dashboard/leaderboard.html', context)
+
+@never_cache
+@login_required(login_url='/auth/login/')
+def top_plays(request):
+    try:
+        player = request.user.player
+    except Exception:
+        return redirect('/auth/logout/')
+
+    plays = player.plays.filter(
+        passed=True,
+        pp__isnull=False,
+        pp__gt=0,
+    ).order_by('-pp')[:100]
+
+    context = {
+        'player': player,
+        'plays': plays,
+    }
+    return render(request, 'dashboard/top_plays.html', context)
 
 def home(request):
     if request.user.is_authenticated:

@@ -174,3 +174,12 @@ a.play-card {
         display: none;
     }
 }
+
+.play-rank-number {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.2);
+    min-width: 32px;
+    text-align: center;
+    flex-shrink: 0;
+}
