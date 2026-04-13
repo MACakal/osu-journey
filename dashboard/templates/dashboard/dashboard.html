@@ -12,7 +12,10 @@
 <div class="dash-header">
     <div class="dash-header-left">
         <h1>Welcome back, <span class="pink">{{ player.osu_username }}</span></h1>
-        <p class="dash-sub">Level {{ player.level }} · {{ player.xp }} XP · Baseline {{ player.skill_baseline }}★</p>
+        <p class="dash-sub">
+            Level {{ player.level }} · {{ player.xp }} XP · {{ level_progress }}% to level {{ player.level|add:1 }}
+            · Baseline {{ player.skill_baseline }}★
+        </p>
     </div>
 </div>
 

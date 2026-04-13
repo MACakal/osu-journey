@@ -1,0 +1,73 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+{% block title %}Leaderboard — osu!journey{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'dashboard/css/leaderboard.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="dash-header">
+    <h1>Mod <span class="pink">Leaderboard</span></h1>
+    <p class="dash-sub">Weighted PP ranking by mod combination</p>
+</div>
+
+<div class="mod-selector">
+    <form method="get">
+        <div class="mod-grid">
+            {% for mod in available_mods %}
+                <label class="mod-option {% if mod in selected_mods %}active{% endif %}">
+                    <input 
+                        type="checkbox" 
+                        name="mods" 
+                        value="{{ mod }}"
+                        {% if mod in selected_mods %}checked{% endif %}
+                    >
+                    {{ mod }}
+                </label>
+            {% endfor %}
+        </div>
+        <button type="submit" class="btn-search">View Leaderboard</button>
+    </form>
+</div>
+
+{% if error %}
+    <p class="error-state">{{ error }}</p>
+{% endif %}
+
+{% if results is not None %}
+    {% if results %}
+        <h2 class="section-title">
+            {% for mod in selected_mods %}{{ mod }}{% if not forloop.last %}+{% endif %}{% endfor %}
+            Rankings
+        </h2>
+        <div class="leaderboard-list">
+            {% for entry in results %}
+            <div class="leaderboard-row">
+                <div class="lb-rank">#{{ forloop.counter }}</div>
+                <div class="lb-username">{{ entry.player.osu_username }}</div>
+                <div class="lb-pp">{{ entry.weighted_pp|floatformat:0 }}pp</div>
+                <div class="lb-plays">{{ entry.play_count }} plays</div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="empty-state">No players found with this mod combination yet.</p>
+    {% endif %}
+{% endif %}
+
+<script>
+    document.querySelectorAll('.mod-option').forEach(label => {
+        const checkbox = label.querySelector('input[type="checkbox"]');
+        
+        checkbox.addEventListener('change', () => {
+            if (checkbox.checked) {
+                label.classList.add('active');
+            } else {
+                label.classList.remove('active');
+            }
+        });
+    });
+</script>
+
+{% endblock %}

@@ -1,7 +1,7 @@
 from django.utils import timezone
 from .models import Beatmap, Play
 from accounts.models import Player
-
+from progression.services import calculate_base_xp, award_xp
 
 def sync_recent_plays(player, plays_data):
     new_plays = 0
@@ -41,7 +41,7 @@ def sync_recent_plays(player, plays_data):
         # get adjusted star rating if available
         adjusted_sr = play_data.get('difficulty_rating') or beatmap.star_rating
 
-        Play.objects.create(
+        play = Play.objects.create(
             osu_score_id=score_id,
             player=player,
             beatmap=beatmap,
@@ -55,6 +55,10 @@ def sync_recent_plays(player, plays_data):
             rank=play_data.get('rank', 'F'),
             pp=play_data.get('pp'),
         )
+
+        xp_amount, is_personal_best = calculate_base_xp(play, player.skill_baseline)
+        award_xp(player, play, xp_amount, is_personal_best)
+
         new_plays += 1
 
     # update last synced timestamp
@@ -108,7 +112,7 @@ def sync_top_plays(player, plays_data):
 
         adjusted_sr = play_data.get('difficulty_rating') or beatmap.star_rating
         
-        Play.objects.create(
+        play = Play.objects.create(
             osu_score_id=score_id,
             player=player,
             beatmap=beatmap,
@@ -122,3 +126,6 @@ def sync_top_plays(player, plays_data):
             rank=play_data.get('rank', 'F'),
             pp=play_data.get('pp'),
         )
+
+        xp_amount, is_personal_best = calculate_base_xp(play, player.skill_baseline)
+        award_xp(player, play, xp_amount, is_personal_best)

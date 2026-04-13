@@ -1,0 +1,100 @@
+.mod-selector {
+    margin-bottom: 2rem;
+}
+
+.mod-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.mod-option {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.85rem;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.12);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.mod-option input {
+    display: none;
+}
+
+.mod-option.active,
+.mod-option:hover {
+    border-color: #FF66AA;
+    color: #FF66AA;
+    background: rgba(255, 102, 170, 0.08);
+}
+
+.btn-search {
+    background: #FF66AA;
+    color: #fff;
+    border: none;
+    padding: 0.6rem 1.5rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.btn-search:hover {
+    background: #ff4d9d;
+}
+
+.leaderboard-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.leaderboard-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: #14161c;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 0.85rem 1.25rem;
+}
+
+.lb-rank {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.3);
+    min-width: 36px;
+}
+
+.lb-username {
+    flex: 1;
+    font-weight: 600;
+    color: #fff;
+}
+
+.lb-pp {
+    color: #FF66AA;
+    font-weight: 700;
+    min-width: 80px;
+    text-align: right;
+}
+
+.lb-plays {
+    color: rgba(255,255,255,0.3);
+    font-size: 0.8rem;
+    min-width: 60px;
+    text-align: right;
+}
+
+.error-state {
+    color: #E24B4A;
+    font-size: 0.9rem;
+    padding: 1rem 0;
+}
