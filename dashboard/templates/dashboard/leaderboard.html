@@ -43,12 +43,17 @@
         </h2>
         <div class="leaderboard-list">
             {% for entry in results %}
-            <div class="leaderboard-row">
-                <div class="lb-rank">#{{ forloop.counter }}</div>
-                <div class="lb-username">{{ entry.player.osu_username }}</div>
-                <div class="lb-pp">{{ entry.weighted_pp|floatformat:0 }}pp</div>
-                <div class="lb-plays">{{ entry.play_count }} plays</div>
-            </div>
+                <a
+                    class="leaderboard-row"
+                    href="https://osu.ppy.sh/users/{{ entry.player.osu_id }}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    <div class="lb-rank">#{{ forloop.counter }}</div>
+                    <div class="lb-username">{{ entry.player.osu_username }}</div>
+                    <div class="lb-pp">{{ entry.weighted_pp|floatformat:0 }}pp</div>
+                    <div class="lb-plays">{{ entry.play_count }} plays</div>
+                </a>
             {% endfor %}
         </div>
     {% else %}
