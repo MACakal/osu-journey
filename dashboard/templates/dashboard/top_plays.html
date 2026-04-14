@@ -5,6 +5,7 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'dashboard/css/dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'dashboard/css/leaderboard.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -12,9 +13,39 @@
 <div class="dash-header">
     <div class="dash-header-left">
         <h1>Top <span class="pink">Plays</span></h1>
-        <p class="dash-sub">Your top 100 plays by PP</p>
+        <p class="dash-sub">
+            {% if selected_mods %}
+                Your top plays with
+                {% for mod in selected_mods %}{{ mod }}{% if not forloop.last %}+{% endif %}{% endfor %}
+            {% else %}
+                Your top 100 plays by PP
+            {% endif %}
+        </p>
     </div>
 </div>
+
+<div class="mod-selector">
+    <form method="get">
+        <div class="mod-grid">
+            {% for mod in available_mods %}
+                <label class="mod-option {% if mod in selected_mods %}active{% endif %}">
+                    <input
+                        type="checkbox"
+                        name="mods"
+                        value="{{ mod }}"
+                        {% if mod in selected_mods %}checked{% endif %}
+                    >
+                    {{ mod }}
+                </label>
+            {% endfor %}
+        </div>
+        <button type="submit" class="btn-search">Filter Plays</button>
+    </form>
+</div>
+
+{% if error %}
+    <p class="error-state">{{ error }}</p>
+{% endif %}
 
 <div class="plays-list">
     {% for play in plays %}
@@ -46,8 +77,21 @@
         </div>
     </a>
     {% empty %}
-        <p class="empty-state">No top plays found yet. Go play some maps!</p>
+        <p class="empty-state">No plays found with this mod combination.</p>
     {% endfor %}
 </div>
+
+<script>
+    document.querySelectorAll('.mod-option').forEach(label => {
+        const checkbox = label.querySelector('input[type="checkbox"]');
+        checkbox.addEventListener('change', () => {
+            if (checkbox.checked) {
+                label.classList.add('active');
+            } else {
+                label.classList.remove('active');
+            }
+        });
+    });
+</script>
 
 {% endblock %}

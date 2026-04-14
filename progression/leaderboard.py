@@ -27,32 +27,34 @@ def get_mod_leaderboard(mod_combination):
     if not is_valid_mod_combination(mod_combination):
         return None, 'Invalid mod combination'
 
-    normalized = normalize_mods(mod_combination)
+    normalized = set(normalize_mods(mod_combination))
 
     results = []
     for player in Player.objects.all():
-        plays = Play.objects.filter(
+        plays = list(Play.objects.filter(
             player=player,
             passed=True,
             pp__isnull=False,
-            pp__gt=0,  # ignore zero PP plays
-        )
+            pp__gt=0,
+        ))
 
-        if 'DT' in normalized:
-            plays = [p for p in plays if 'DT' in p.mods or 'NC' in p.mods]
-        else:
-            plays = list(plays)
+        filtered_plays = []
+        for p in plays:
+            play_mods = set(normalize_mods(p.mods))
 
-        for mod in normalized:
-            if mod != 'DT':
-                plays = [p for p in plays if mod in p.mods]
+            # Treat NC as DT
+            if 'DT' in normalized and 'NC' in play_mods:
+                play_mods.discard('NC')
+                play_mods.add('DT')
 
-        if not plays:
+            if play_mods == normalized:
+                filtered_plays.append(p)
+
+        if not filtered_plays:
             continue
 
-        # cap at top 100 plays by PP, same as osu!
         best_per_map = {}
-        for p in plays:
+        for p in filtered_plays:
             if p.beatmap_id not in best_per_map or p.pp > best_per_map[p.beatmap_id].pp:
                 best_per_map[p.beatmap_id] = p
 
@@ -67,7 +69,7 @@ def get_mod_leaderboard(mod_combination):
             results.append({
                 'player': player,
                 'weighted_pp': weighted_pp,
-                'play_count': len(plays),
+                'play_count': len(filtered_plays),
             })
 
     results = sorted(results, key=lambda x: x['weighted_pp'], reverse=True)

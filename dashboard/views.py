@@ -69,15 +69,54 @@ def top_plays(request):
     except Exception:
         return redirect('/auth/logout/')
 
-    plays = player.plays.filter(
-        passed=True,
-        pp__isnull=False,
-        pp__gt=0,
-    ).order_by('-pp')[:100]
+    from progression.leaderboard import normalize_mods, is_valid_mod_combination
+
+    selected_mods = request.GET.getlist('mods')
+    error = None
+
+    plays = list(
+        player.plays.filter(
+            passed=True,
+            pp__isnull=False,
+            pp__gt=0,
+        )
+    )
+
+    if selected_mods:
+        if not is_valid_mod_combination(selected_mods):
+            error = 'Invalid mod combination'
+            plays = []
+        else:
+            normalized_selected = set(normalize_mods(selected_mods))
+            filtered_plays = []
+
+            for p in plays:
+                play_mods = set(normalize_mods(p.mods))
+
+                # Treat NC as DT for matching
+                if 'DT' in normalized_selected and 'NC' in play_mods:
+                    play_mods.discard('NC')
+                    play_mods.add('DT')
+
+                # Exact match only: no extra mods allowed
+                if play_mods == normalized_selected:
+                    filtered_plays.append(p)
+
+            plays = filtered_plays
+
+    best_per_map = {}
+    for p in plays:
+        if p.beatmap_id not in best_per_map or p.pp > best_per_map[p.beatmap_id].pp:
+            best_per_map[p.beatmap_id] = p
+
+    plays = sorted(best_per_map.values(), key=lambda p: p.pp, reverse=True)[:100]
 
     context = {
         'player': player,
         'plays': plays,
+        'selected_mods': selected_mods,
+        'available_mods': ['EZ', 'NF', 'HT', 'HR', 'SD', 'PF', 'DT', 'HD', 'FI', 'FL'],
+        'error': error,
     }
     return render(request, 'dashboard/top_plays.html', context)
 
