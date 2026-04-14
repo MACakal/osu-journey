@@ -1,5 +1,6 @@
-# Copyright (C) 2026 Jin
-# Licensed under the GNU GPL v3
+Copyright (C) 2026 MACakal
+
+Licensed under the GNU GPL v3
 
 ## What is osu!journey?
 
