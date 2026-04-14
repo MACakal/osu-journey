@@ -1,4 +1,4 @@
-Copyright (C) 2026 Jin
+Copyright (C) 2026 MACakal
 
 Licensed under the GNU GPL v3
 
