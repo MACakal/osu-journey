@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# Copyright (C) 2026 MACakal
+# Licensed under the GNU GPL v3
 """Django's command-line utility for administrative tasks."""
 import os
 import sys

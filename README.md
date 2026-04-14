@@ -1,3 +1,6 @@
+# Copyright (C) 2026 Jin
+# Licensed under the GNU GPL v3
+
 ## What is osu!journey?
 
 osu!journey is an open source companion platform for osu! that gives players a structured progression system built on top of the game they already play. osu! is an incredible game but for a lot of players, especially newer ones and those stuck in the mid-ranks, it can start to feel directionless. You open the game, browse maps for ten minutes, play a few, close it, and repeat. There's no answer to the question that actually matters: *what should I do next?*
