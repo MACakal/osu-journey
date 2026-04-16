@@ -62,3 +62,30 @@ def get_top_plays(access_token, osu_id, limit=100):
     )
     response.raise_for_status()
     return response.json()
+
+def refresh_access_token(player):
+    response = requests.post(OSU_TOKEN_URL, data={
+        'client_id': settings.OSU_CLIENT_ID,
+        'client_secret': settings.OSU_CLIENT_SECRET,
+        'grant_type': 'refresh_token',
+        'refresh_token': player.refresh_token,
+    })
+    response.raise_for_status()
+    data = response.json()
+
+    from django.utils import timezone
+    from datetime import timedelta
+
+    player.access_token = data['access_token']
+    player.refresh_token = data['refresh_token']
+    player.token_expires_at = timezone.now() + timedelta(seconds=data['expires_in'])
+    player.save(update_fields=['access_token', 'refresh_token', 'token_expires_at'])
+
+    return player.access_token
+
+def get_valid_token(player):
+    from django.utils import timezone
+
+    if timezone.now() >= player.token_expires_at:
+        return refresh_access_token(player)
+    return player.access_token

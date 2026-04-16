@@ -5,6 +5,7 @@ from accounts import services as osu_services
 from gameplay.services import sync_recent_plays, sync_top_plays, update_skill_baseline
 from progression.services import get_next_level_threshold, get_level_progress
 from progression.leaderboard import get_mod_leaderboard
+from accounts.services import get_valid_token
 
 @never_cache
 @login_required(login_url='/auth/login/')
@@ -16,17 +17,12 @@ def dashboard(request):
 
     try:
         # sync recent plays
-        recent_data = osu_services.get_recent_plays(
-            player.access_token,
-            player.osu_id
-        )
+        token = get_valid_token(player)
+        recent_data = osu_services.get_recent_plays(token, player.osu_id)
         sync_recent_plays(player, recent_data)
 
         # sync top plays for skill baseline
-        top_data = osu_services.get_top_plays(
-            player.access_token,
-            player.osu_id
-        )
+        top_data = osu_services.get_top_plays(token, player.osu_id)
         sync_top_plays(player, top_data)
 
         # recalculate skill baseline from top plays
