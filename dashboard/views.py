@@ -43,6 +43,20 @@ def dashboard(request):
     }
     return render(request, 'dashboard/dashboard.html', context)
 
+@login_required(login_url='/auth/login/')
+def xp_logs(request):
+    try:
+        player = request.user.player
+    except Exception:
+        return redirect('/auth/logout/')
+
+    logs = player.xp_logs.order_by('-earned_at')[:50]  # Last 50 XP logs
+    context = {
+        'player': player,
+        'xp_logs': logs,
+    }
+    return render(request, 'dashboard/xp_logs.html', context)
+
 def leaderboard(request):
     mods = request.GET.getlist('mods')
     results = None

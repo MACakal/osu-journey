@@ -1,0 +1,65 @@
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    font-size: 2rem;
+    margin: 0;
+    color: #fff;
+}
+
+.page-header p {
+    margin: 0.75rem 0 0;
+    color: rgba(255, 255, 255, 0.72);
+    max-width: 720px;
+    line-height: 1.7;
+}
+
+.xp-logs-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.xp-log-item {
+    background: rgba(18, 20, 26, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 1.2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.xp-log-item:hover {
+    transform: translateY(-1px);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.xp-log-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.xp-amount {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #FF66AA;
+}
+
+.xp-source {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+}
+
+.xp-time {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.85rem;
+}
+
+.xp-log-details p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+}
