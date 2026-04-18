@@ -1,0 +1,32 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block title %}Quests{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'dashboard/css/quests.css' %}">
+{% endblock %}
+
+{% block content %}
+    <section class="page-header">
+        <h1>General Quests</h1>
+        <p>These quests are generated from your baseline skill level and reward XP for balanced play styles.</p>
+    </section>
+
+    {% if active_quests %}
+        <div class="quests-grid">
+            {% for progress in active_quests %}
+                <article class="quest-card">
+                    <h2>{{ progress.quest.name }}</h2>
+                    <div class="quest-meta">
+                        <span>Condition: {% if progress.quest.condition_type == 'min_star_rating' %}≥ {{ progress.quest.condition_value }}★{% elif progress.quest.condition_type == 'min_accuracy' %}≥ {{ progress.quest.condition_value }}% accuracy{% elif progress.quest.condition_type == 'min_score' %}score {{ progress.quest.condition_operator }} {{ progress.quest.condition_value }}{% elif progress.quest.condition_type == 'mod_includes' %}includes {{ progress.quest.condition_value }}{% else %}{{ progress.quest.condition_type }} {{ progress.quest.condition_operator }} {{ progress.quest.condition_value }}{% endif %}</span>
+                        <span>Status: {{ progress.status }}</span>
+                        <span>XP: {{ progress.quest.xp_reward }}</span>
+                        <span>Type: {{ progress.quest.category|title }}</span>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No active quests found. Your play data will generate baseline quests the next time you visit this page.</p>
+    {% endif %}
+{% endblock %}

@@ -59,6 +59,10 @@ def sync_recent_plays(player, plays_data):
         xp_amount, is_personal_best = calculate_base_xp(play, player.skill_baseline)
         award_xp(player, play, xp_amount, is_personal_best)
 
+        # Check quest completion
+        from quests.services import check_quest_completion
+        check_quest_completion(play)
+
         new_plays += 1
 
     # update last synced timestamp

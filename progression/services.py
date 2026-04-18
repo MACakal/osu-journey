@@ -110,17 +110,20 @@ def get_level_progress(player):
     xp_needed = next_threshold - current_threshold
     return round((xp_into_level / xp_needed) * 100)
 
-def award_xp(player, play, base_xp, is_personal_best):
+def award_xp(player, play, base_xp, is_personal_best, source_type='play', source_id=None):
     modifier_breakdown = []
     final_xp = base_xp
+
+    if source_id is None:
+        source_id = play.id if play else 0
 
     XPLog.objects.create(
         player=player,
         active_build=player.active_build,
         base_xp=base_xp,
         final_xp=final_xp,
-        source_type='play',
-        source_id=play.id,
+        source_type=source_type,
+        source_id=source_id,
         modifier_breakdown=modifier_breakdown,
     )
 

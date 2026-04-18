@@ -1,0 +1,74 @@
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    font-size: 2rem;
+    margin: 0;
+    color: #fff;
+}
+
+.page-header p {
+    margin: 0.75rem 0 0;
+    color: rgba(255, 255, 255, 0.72);
+    max-width: 720px;
+    line-height: 1.7;
+}
+
+.quests-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.2rem;
+}
+
+.quest-card {
+    background: rgba(18, 20, 26, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 1.4rem;
+    box-shadow: 0 20px 55px rgba(0, 0, 0, 0.22);
+    transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.quest-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.quest-card h2 {
+    margin: 0 0 0.8rem;
+    font-size: 1.1rem;
+    letter-spacing: -0.02em;
+    color: #fff;
+}
+
+.quest-card p {
+    margin: 0 0 1.25rem;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.7;
+    min-height: 72px;
+}
+
+.quest-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    color: rgba(255, 255, 255, 0.64);
+    font-size: 0.88rem;
+}
+
+.quest-meta span {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.55rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.quest-meta span:nth-child(2) {
+    color: #FF66AA;
+    border-color: rgba(255, 102, 170, 0.18);
+    background: rgba(255, 102, 170, 0.08);
+}

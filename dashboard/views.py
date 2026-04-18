@@ -6,6 +6,8 @@ from gameplay.services import sync_recent_plays, sync_top_plays, update_skill_ba
 from progression.services import get_next_level_threshold, get_level_progress
 from progression.leaderboard import get_mod_leaderboard
 from accounts.services import get_valid_token
+from quests.services import ensure_player_quests
+from quests.services import ensure_player_quests
 
 @never_cache
 @login_required(login_url='/auth/login/')
@@ -115,6 +117,22 @@ def top_plays(request):
         'error': error,
     }
     return render(request, 'dashboard/top_plays.html', context)
+
+
+@never_cache
+@login_required(login_url='/auth/login/')
+def quests(request):
+    try:
+        player = request.user.player
+    except Exception:
+        return redirect('/auth/logout/')
+
+    active_quests = ensure_player_quests(player)
+    return render(request, 'dashboard/quests.html', {
+        'player': player,
+        'active_quests': active_quests,
+    })
+
 
 def home(request):
     if request.user.is_authenticated:
