@@ -24,6 +24,11 @@
         </div>
         <div class="navbar-right">
             {% if user.is_authenticated %}
+                <div class="nav-profile">
+                    <a href="/dashboard/" class="nav-profile-link" title="View profile">
+                        <img src="{{ user.player.avatar_url }}" class="nav-profile-pic" alt="Profile picture">
+                    </a>
+                </div>
                 <a href="{% url 'accounts:logout' %}" class="btn-logout">Logout</a>
             {% else %}
                 <a href="{% url 'accounts:login' %}" class="nav-link">Login</a>

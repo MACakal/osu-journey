@@ -50,6 +50,12 @@
                     rel="noopener noreferrer"
                 >
                     <div class="lb-rank">#{{ forloop.counter }}</div>
+                    <div class="lb-avatar">
+                        <img
+                            src="{{ entry.player.avatar_url }}"
+                            alt="{{ entry.player.osu_username }} avatar"
+                        />
+                    </div>
                     <div class="lb-username">{{ entry.player.osu_username }}</div>
                     <div class="lb-pp">{{ entry.weighted_pp|floatformat:0 }}pp</div>
                     <div class="lb-plays">{{ entry.play_count }} plays</div>

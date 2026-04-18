@@ -1,5 +1,8 @@
 import requests
 from django.conf import settings
+from io import BytesIO
+from django.core.files.base import ContentFile
+from PIL import Image, ImageOps
 
 OSU_TOKEN_URL = 'https://osu.ppy.sh/oauth/token'
 OSU_API_BASE = 'https://osu.ppy.sh/api/v2'
@@ -35,6 +38,29 @@ def get_current_user(access_token):
     })
     response.raise_for_status()
     return response.json()
+
+
+def resize_and_save_avatar(player, avatar_url, size=(60, 60)):
+    if not avatar_url:
+        return
+
+    try:
+        response = requests.get(avatar_url, timeout=10)
+        response.raise_for_status()
+
+        image = Image.open(BytesIO(response.content))
+        image = image.convert('RGBA')
+        resized = ImageOps.fit(image, size, method=Image.LANCZOS)
+
+        buffer = BytesIO()
+        resized.save(buffer, format='PNG')
+        buffer.seek(0)
+
+        filename = f'avatars/{player.osu_id}.png'
+        player.avatar_image.save(filename, ContentFile(buffer.read()), save=True)
+    except Exception as e:
+        print(f'Could not resize avatar: {e}')
+
 
 def get_recent_plays(access_token, osu_id, limit=50):
     response = requests.get(

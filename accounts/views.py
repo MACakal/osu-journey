@@ -35,6 +35,7 @@ def callback(request):
         user_data = services.get_current_user(access_token)
         osu_id = user_data['id']
         osu_username = user_data['username']
+        avatar_url = user_data.get('avatar_url') or user_data.get('avatar') or ''
         print(f"User: {osu_username}, ID: {osu_id}")
 
         user, created = User.objects.get_or_create(username=osu_username)
@@ -45,6 +46,7 @@ def callback(request):
             defaults={
                 'user': user,
                 'osu_username': osu_username,
+                'profile_image_url': avatar_url,
                 'access_token': access_token,
                 'refresh_token': refresh_token,
                 'token_expires_at': token_expires_at,
@@ -53,10 +55,14 @@ def callback(request):
         print(f"Player created: {player_created}")
 
         player.osu_username = osu_username
+        player.profile_image_url = avatar_url
         player.access_token = access_token
         player.refresh_token = refresh_token
         player.token_expires_at = token_expires_at
         player.save()
+
+        if avatar_url:
+            services.resize_and_save_avatar(player, avatar_url)
 
         print("Logging in user")
         auth_login(request, user, backend='django.contrib.auth.backends.ModelBackend')
