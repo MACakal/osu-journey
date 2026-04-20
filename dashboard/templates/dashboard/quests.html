@@ -1,6 +1,6 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
-{% block title %}Quests{% endblock %}
+{% block title %}Quests — osu!journey{% endblock %}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'dashboard/css/quests.css' %}">
@@ -8,25 +8,42 @@
 
 {% block content %}
     <section class="page-header">
-        <h1>General Quests</h1>
-        <p>These quests are generated from your baseline skill level and reward XP for balanced play styles.</p>
+        <h1>Quests</h1>
+        <p>Generated from your skill baseline. Complete them to earn XP.</p>
     </section>
 
     {% if active_quests %}
         <div class="quests-grid">
             {% for progress in active_quests %}
-                <article class="quest-card">
+                <article class="quest-card category-{{ progress.quest.category }}">
+                    <div class="quest-card-top">
+                        <span class="quest-category">{{ progress.quest.category|title }}</span>
+                        <span class="quest-xp">+{{ progress.quest.xp_reward }} XP</span>
+                    </div>
                     <h2>{{ progress.quest.name }}</h2>
-                    <div class="quest-meta">
-                        <span>Condition: {% if progress.quest.condition_type == 'min_star_rating' %}≥ {{ progress.quest.condition_value }}★{% elif progress.quest.condition_type == 'min_accuracy' %}≥ {{ progress.quest.condition_value }}% accuracy{% elif progress.quest.condition_type == 'min_score' %}score {{ progress.quest.condition_operator }} {{ progress.quest.condition_value }}{% elif progress.quest.condition_type == 'mod_includes' %}includes {{ progress.quest.condition_value }}{% else %}{{ progress.quest.condition_type }} {{ progress.quest.condition_operator }} {{ progress.quest.condition_value }}{% endif %}</span>
-                        <span>Status: {{ progress.status }}</span>
-                        <span>XP: {{ progress.quest.xp_reward }}</span>
-                        <span>Type: {{ progress.quest.category|title }}</span>
+                    <p class="quest-desc">{{ progress.quest.description }}</p>
+                    <div class="quest-footer">
+                        <span class="quest-condition">
+                            {% if progress.quest.condition_type == 'min_star_rating' %}
+                                ≥ {{ progress.quest.condition_value }}★
+                            {% elif progress.quest.condition_type == 'min_accuracy' %}
+                                ≥ {{ progress.quest.condition_value }}% acc
+                            {% elif progress.quest.condition_type == 'mod_includes' %}
+                                {% with parts=progress.quest.condition_value|cut:" " %}
+                                    {{ parts|truncatechars:20 }}
+                                {% endwith %}
+                            {% elif progress.quest.condition_type == 'beatmap_personal_best_pp' %}
+                                new PP best (≥ {{ progress.quest.condition_value }}★)
+                            {% else %}
+                                {{ progress.quest.condition_type }}
+                            {% endif %}
+                        </span>
+                        <span class="quest-status status-{{ progress.status }}">{{ progress.status|title }}</span>
                     </div>
                 </article>
             {% endfor %}
         </div>
     {% else %}
-        <p>No active quests found. Your play data will generate baseline quests the next time you visit this page.</p>
+        <p class="empty-state">No active quests. Visit this page after syncing some plays to generate your first set.</p>
     {% endif %}
 {% endblock %}

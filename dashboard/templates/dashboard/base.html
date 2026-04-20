@@ -27,6 +27,7 @@
                     <a href="/dashboard/" class="nav-profile-link" title="View profile">
                         <img src="{{ user.player.avatar_url }}" class="nav-profile-pic" alt="Profile picture">
                     </a>
+                    <span class="nav-username">{{ user.player.osu_username }}</span>
                 </div>
                 <a href="{% url 'accounts:logout' %}" class="btn-logout">Logout</a>
             {% else %}

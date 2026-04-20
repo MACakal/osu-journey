@@ -26,6 +26,8 @@ class Quest(models.Model):
         ('above_skill_baseline', 'Above Skill Baseline'),
         ('below_skill_baseline', 'Below Skill Baseline'),
         ('min_score', 'Minimum Score'),
+        ('min_pp', 'Minimum PP'),
+        ('beatmap_personal_best_pp', 'Beatmap Personal Best PP'),
         ('mod_includes', 'Mod Includes'),
         ('min_bpm', 'Minimum BPM'),
     ]

@@ -1,9 +1,10 @@
 import random
 from django.utils import timezone
 from .models import Quest, QuestProgress
-from gameplay.models import Play
 
-MOD_OPTIONS = ['EZ', 'NF', 'HR', 'SD', 'PF', 'DT', 'HD', 'FL']
+# PF and FL removed: PF is too punishing (no miss + no 100s), FL requires dedicated training
+MOD_OPTIONS_BASE = ['EZ', 'NF', 'HR', 'HD']
+MOD_OPTIONS_ADVANCED = ['EZ', 'NF', 'HR', 'SD', 'DT', 'HD']
 
 INVALID_COMBINATIONS = [
     frozenset({'EZ', 'HR'}),
@@ -39,31 +40,19 @@ def _build_xp_reward(baseline, bonus=0):
     return max(25, int(round(40 + baseline * 10 + bonus)))
 
 
-def _star_range(baseline, low_factor=0.8, high_factor=100.0):
-    low = _round_star(baseline * low_factor)
-    high = _round_star(max(low, baseline * high_factor))
-    return low, high
 
-
-def _get_mod_multiplier(mods):
-    multiplier = 1.0
-    for mod in mods:
-        multiplier *= MOD_MULTIPLIERS.get(mod, 1.0)
-    return multiplier
-
-
-def _choose_mod():
-    # Choose 1 or 2 mods randomly
+def _choose_mod(baseline=1.0):
+    pool = MOD_OPTIONS_ADVANCED if baseline >= 3.0 else MOD_OPTIONS_BASE
     num_mods = random.choice([1, 2])
-    selected = random.sample(MOD_OPTIONS, num_mods)
+    if num_mods > len(pool):
+        num_mods = 1
+    selected = random.sample(pool, num_mods)
     selected_set = frozenset(selected)
-    
-    # Check if valid
+
     for invalid in INVALID_COMBINATIONS:
         if invalid.issubset(selected_set):
-            # If invalid, try again (simple retry, could loop)
-            return _choose_mod()
-    
+            return _choose_mod(baseline)
+
     return selected
 
 
@@ -74,9 +63,6 @@ def _best_near_baseline_play(player, min_star, max_star):
         adjusted_star_rating__lte=max_star,
     ).order_by('-score').first()
 
-
-def _format_star_range(min_star, max_star):
-    return f"{min_star}★–{max_star}★" if min_star != max_star else f"{min_star}★"
 
 
 def _accuracy_target(baseline):
@@ -109,7 +95,7 @@ def _generate_pass_near_baseline(player):
 def _generate_accuracy_quest(player):
     baseline = _normalize_baseline(player.skill_baseline)
     min_star = _round_star(baseline * 0.875)
-    accuracy_target = 99
+    accuracy_target = _accuracy_target(baseline)
 
     return {
         'name': f'Get {accuracy_target}% on a {min_star}★ or higher map',
@@ -137,27 +123,32 @@ def _generate_personal_best_quest(player):
     best_play = _best_near_baseline_play(player, min_star, 100.0)  # since no upper limit
 
     if best_play:
-        target = best_play.score + 1
-        name = f'Beat your best score on a {min_star}★ or higher map'
+        name = f'Beat your best PP on a {min_star}★+ map you\'ve already played'
         description = (
-            f'Improve your score on a map with {min_star}★ or higher and set a new personal best.'
+            f'On any beatmap with adjusted star rating {min_star}★ or higher that you\'ve played before, '
+            f'set a new personal best PP score on that same map.'
         )
+        condition_type = 'beatmap_personal_best_pp'
+        condition_value = str(min_star)
+        condition_operator = 'gt'
     else:
-        target = min_star
         name = f'Pass any map with star rating {min_star}★ or higher'
         description = (
-            f'Pass any map with adjusted star rating {min_star}★ or higher. '
+            f'Pass any beatmap with adjusted star rating {min_star}★ or higher. '
             f'This helps create a better score for future quests.'
         )
+        condition_type = 'min_star_rating'
+        condition_value = str(min_star)
+        condition_operator = 'gte'
 
     return {
         'name': name,
         'description': description,
         'quest_type': 'progression',
         'category': 'challenge',
-        'condition_type': 'min_score' if best_play else 'min_star_rating',
-        'condition_value': str(target),
-        'condition_operator': 'gt' if best_play else 'gte',
+        'condition_type': condition_type,
+        'condition_value': condition_value,
+        'condition_operator': condition_operator,
         'required_count': 1,
         'timeframe': 'alltime',
         'scales_with_baseline': True,
@@ -169,7 +160,7 @@ def _generate_personal_best_quest(player):
 
 def _generate_mod_style_quest(player):
     baseline = _normalize_baseline(player.skill_baseline)
-    chosen_mods = _choose_mod()
+    chosen_mods = _choose_mod(baseline)
     mod_str = '+'.join(chosen_mods) if len(chosen_mods) > 1 else chosen_mods[0]
     min_star = _round_star(baseline * 0.875)
     
@@ -182,7 +173,7 @@ def _generate_mod_style_quest(player):
         'quest_type': 'progression',
         'category': 'exploration',
         'condition_type': 'mod_includes',
-        'condition_value': ','.join(sorted(chosen_mods)),
+        'condition_value': f"{','.join(sorted(chosen_mods))}|{min_star}",
         'condition_operator': 'eq',
         'required_count': 1,
         'timeframe': 'alltime',
@@ -227,7 +218,11 @@ def ensure_player_quests(player):
             )
         )
 
-    return progress_records
+    if progress_records:
+        for play in player.plays.filter(passed=True).order_by('played_at'):
+            check_quest_completion(play)
+
+    return player.quest_progresses.filter(is_archived=False, status='active').select_related('quest')
 
 
 def check_quest_completion(play):
@@ -240,20 +235,61 @@ def check_quest_completion(play):
         condition_value = quest.condition_value
         condition_operator = quest.condition_operator
 
+        # Most quest progress should only count passed plays.
+        if not play.passed:
+            continue
+
         if condition_type == 'min_star_rating':
             value = play.adjusted_star_rating
         elif condition_type == 'min_accuracy':
             value = play.accuracy
         elif condition_type == 'min_score':
             value = play.score
+        elif condition_type == 'min_pp':
+            value = play.pp or 0
+        elif condition_type == 'beatmap_personal_best_pp':
+            min_star = float(condition_value)
+            if play.adjusted_star_rating < min_star or play.pp is None:
+                continue
+
+            best_previous_play = player.plays.filter(
+                beatmap=play.beatmap,
+                pp__isnull=False,
+            ).exclude(pk=play.pk).order_by('-pp').first()
+
+            if not best_previous_play or play.pp <= best_previous_play.pp:
+                continue
+
+            progress.current_count += 1
+            if progress.current_count >= quest.required_count:
+                progress.status = 'completed'
+                progress.completed_at = timezone.now()
+                from progression.services import award_xp
+                award_xp(player, play, quest.xp_reward, False, 'quest', quest.id)
+                progress.is_archived = True
+            progress.save()
+            continue
         elif condition_type == 'mod_includes':
-            # For mod quests, check if all required mods are in play.mods
-            required_mods = set(condition_value.split(','))
-            play_mods = set(play.mods)
-            if required_mods.issubset(play_mods):
-                value = 1  # arbitrary, since it's presence
+            # condition_value format: "MOD1,MOD2|min_star" or legacy "MOD1,MOD2"
+            if '|' in condition_value:
+                mods_part, min_star_part = condition_value.split('|', 1)
+                if play.adjusted_star_rating < float(min_star_part):
+                    continue
             else:
-                continue  # not satisfied
+                mods_part = condition_value
+            required_mods = set(mods_part.split(','))
+            play_mods = set(play.mods)
+            if not required_mods.issubset(play_mods):
+                continue
+            progress.current_count += 1
+            if progress.current_count >= quest.required_count:
+                progress.status = 'completed'
+                progress.completed_at = timezone.now()
+                from progression.services import award_xp
+                award_xp(player, play, quest.xp_reward, False, 'quest', quest.id)
+                progress.is_archived = True
+            progress.save()
+            continue
         else:
             continue  # unknown condition
 

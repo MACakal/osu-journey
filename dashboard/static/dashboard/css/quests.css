@@ -1,74 +1,140 @@
 .page-header {
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
 }
 
 .page-header h1 {
-    font-size: 2rem;
-    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem;
     color: #fff;
+    letter-spacing: -0.02em;
 }
 
 .page-header p {
-    margin: 0.75rem 0 0;
-    color: rgba(255, 255, 255, 0.72);
-    max-width: 720px;
-    line-height: 1.7;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 0.9rem;
+    line-height: 1.6;
 }
 
 .quests-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.2rem;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
 }
 
+/* category accent colors */
+.quest-card { --accent: rgba(255, 255, 255, 0.15); }
+.quest-card.category-performance { --accent: #FF66AA; }
+.quest-card.category-consistency { --accent: #5a9de8; }
+.quest-card.category-exploration  { --accent: #EF9F27; }
+.quest-card.category-challenge    { --accent: #5acd6a; }
+
 .quest-card {
-    background: rgba(18, 20, 26, 0.96);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 24px;
-    padding: 1.4rem;
-    box-shadow: 0 20px 55px rgba(0, 0, 0, 0.22);
-    transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    background: rgba(16, 18, 24, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-top: 2px solid var(--accent);
+    border-radius: 14px;
+    padding: 1.25rem;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
 }
 
 .quest-card:hover {
     transform: translateY(-2px);
-    border-color: rgba(255, 255, 255, 0.18);
-    background: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.12);
+    border-top-color: var(--accent);
+}
+
+.quest-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.quest-category {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+}
+
+.quest-xp {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #FF66AA;
+    background: rgba(255, 102, 170, 0.1);
+    border: 1px solid rgba(255, 102, 170, 0.2);
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
 }
 
 .quest-card h2 {
-    margin: 0 0 0.8rem;
-    font-size: 1.1rem;
-    letter-spacing: -0.02em;
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
     color: #fff;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
 }
 
-.quest-card p {
-    margin: 0 0 1.25rem;
-    color: rgba(255, 255, 255, 0.7);
-    line-height: 1.7;
-    min-height: 72px;
+.quest-desc {
+    margin: 0;
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.6;
+    flex: 1;
 }
 
-.quest-meta {
+.quest-footer {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    color: rgba(255, 255, 255, 0.64);
-    font-size: 0.88rem;
-}
-
-.quest-meta span {
-    display: inline-flex;
     align-items: center;
-    padding: 0.55rem 0.9rem;
-    border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.03);
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    flex-wrap: wrap;
 }
 
-.quest-meta span:nth-child(2) {
-    color: #FF66AA;
-    border-color: rgba(255, 102, 170, 0.18);
-    background: rgba(255, 102, 170, 0.08);
+.quest-condition {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.4);
+    font-family: ui-monospace, 'SF Mono', monospace;
+}
+
+.quest-status {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+}
+
+.quest-status.status-active {
+    color: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.quest-status.status-completed {
+    color: #5acd6a;
+    background: rgba(90, 205, 106, 0.1);
+    border: 1px solid rgba(90, 205, 106, 0.2);
+}
+
+.empty-state {
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 0.875rem;
+    padding: 3rem 0;
+    text-align: center;
 }

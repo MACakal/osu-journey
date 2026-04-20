@@ -10,13 +10,16 @@
 {% block content %}
 
 <div class="dash-header">
-    <div class="dash-header-left">
-        <h1>Welcome back, <span class="pink">{{ player.osu_username }}</span></h1>
-        <p class="dash-sub">
-            Level {{ player.level }} · {{ player.xp }} XP · {{ level_progress }}% to level {{ player.level|add:1 }}
-            · Baseline {{ player.skill_baseline }}★
-        </p>
+    <h1>Welcome back, <span class="pink">{{ player.osu_username }}</span></h1>
+    <div class="dash-chips">
+        <span class="dash-chip">Lv. {{ player.level }}</span>
+        <span class="dash-chip">{{ player.xp }} XP</span>
+        <span class="dash-chip chip-pink">{{ player.skill_baseline }}★ baseline</span>
     </div>
+    <div class="xp-bar-wrap">
+        <div class="xp-bar-fill" style="width: {{ level_progress }}%"></div>
+    </div>
+    <p class="dash-sub">{{ level_progress }}% to level {{ player.level|add:1 }}</p>
 </div>
 
 <h2 class="section-title">Recent Plays</h2>
@@ -29,7 +32,7 @@
                 <img src="{{ play.beatmap.cover_url }}" alt="cover">
             {% else %}
                 <div class="play-cover-placeholder"></div>
-            {% endif %} 
+            {% endif %}
         </div>
         <div class="play-info">
             <div class="play-title">{{ play.beatmap.title }}</div>

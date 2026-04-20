@@ -1,7 +1,7 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
 {% load quests_tags %}
-{% block title %}XP Logs{% endblock %}
+{% block title %}XP Logs — osu!journey{% endblock %}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'dashboard/css/xp_logs.css' %}">
@@ -10,34 +10,29 @@
 {% block content %}
     <section class="page-header">
         <h1>XP History</h1>
-        <p>View your recent XP gains and what activities earned them.</p>
+        <p>Recent XP gains from plays and completed quests.</p>
     </section>
 
     {% if xp_logs %}
         <div class="xp-logs-container">
             {% for log in xp_logs %}
-                <div class="xp-log-item">
-                    <div class="xp-log-header">
-                        <span class="xp-amount">+{{ log.final_xp }} XP</span>
-                        <span class="xp-source">{{ log.source_type|title }}{% if log.source_type == 'play' %} #{{ log.source_id }}{% elif log.source_type == 'quest' %} #{{ log.source_id }}{% endif %}</span>
-                        <span class="xp-time">{{ log.earned_at|date:"M j, H:i" }}</span>
+                <div class="xp-log-item source-{{ log.source_type }}">
+                    <span class="xp-amount">+{{ log.final_xp }} XP</span>
+                    <div class="xp-log-body">
+                        <div class="xp-source">
+                            {% if log.source_type == 'quest' %}
+                                Quest: {{ log.source_id|get_quest_name }}
+                            {% else %}
+                                Play
+                            {% endif %}
+                        </div>
+                        <div class="xp-detail">{{ log.earned_at|date:"M j, Y · H:i" }}</div>
                     </div>
-                    <div class="xp-log-details">
-                        {% if log.source_type == 'play' %}
-                            <p>Earned from playing a beatmap.</p>
-                        {% elif log.source_type == 'quest' %}
-
-                            <p>Completed quest: {{ log.source_id|get_quest_name }}</p>
-                        {% else %}
-                            <p>{{ log.source_type|title }} activity.</p>
-                        {% endif %}
-                    </div>
+                    <span class="xp-time">{{ log.earned_at|timesince }} ago</span>
                 </div>
             {% endfor %}
         </div>
     {% else %}
-        <p>No XP logs found yet. Start playing to earn XP!</p>
+        <p class="empty-state">No XP logs yet. Start playing to earn XP!</p>
     {% endif %}
 {% endblock %}
-</content>
-<parameter name="filePath">c:\Users\JinMori07\Documents\osu-journey\dashboard\templates\dashboard\xp_logs.html

@@ -7,7 +7,6 @@ from progression.services import get_next_level_threshold, get_level_progress
 from progression.leaderboard import get_mod_leaderboard
 from accounts.services import get_valid_token
 from quests.services import ensure_player_quests
-from quests.services import ensure_player_quests
 
 @never_cache
 @login_required(login_url='/auth/login/')
@@ -50,6 +49,22 @@ def xp_logs(request):
     except Exception:
         return redirect('/auth/logout/')
 
+    try:
+        # sync recent plays
+        token = get_valid_token(player)
+        recent_data = osu_services.get_recent_plays(token, player.osu_id)
+        sync_recent_plays(player, recent_data)
+
+        # sync top plays for skill baseline
+        top_data = osu_services.get_top_plays(token, player.osu_id)
+        sync_top_plays(player, top_data)
+
+        # recalculate skill baseline from top plays
+        update_skill_baseline(player)
+
+    except Exception as e:
+        print(f"Sync error: {e}")
+
     logs = player.xp_logs.order_by('-earned_at')[:50]  # Last 50 XP logs
     context = {
         'player': player,
@@ -58,6 +73,26 @@ def xp_logs(request):
     return render(request, 'dashboard/xp_logs.html', context)
 
 def leaderboard(request):
+    try:
+        player = request.user.player
+    except Exception:
+        return redirect('/auth/logout/')
+    try:
+        # sync recent plays
+        token = get_valid_token(player)
+        recent_data = osu_services.get_recent_plays(token, player.osu_id)
+        sync_recent_plays(player, recent_data)
+
+        # sync top plays for skill baseline
+        top_data = osu_services.get_top_plays(token, player.osu_id)
+        sync_top_plays(player, top_data)
+
+        # recalculate skill baseline from top plays
+        update_skill_baseline(player)
+
+    except Exception as e:
+        print(f"Sync error: {e}")
+
     mods = request.GET.getlist('mods')
     results = None
     error = None
@@ -80,7 +115,22 @@ def top_plays(request):
         player = request.user.player
     except Exception:
         return redirect('/auth/logout/')
+    try:
+        # sync recent plays
+        token = get_valid_token(player)
+        recent_data = osu_services.get_recent_plays(token, player.osu_id)
+        sync_recent_plays(player, recent_data)
 
+        # sync top plays for skill baseline
+        top_data = osu_services.get_top_plays(token, player.osu_id)
+        sync_top_plays(player, top_data)
+
+        # recalculate skill baseline from top plays
+        update_skill_baseline(player)
+
+    except Exception as e:
+        print(f"Sync error: {e}")
+    
     from progression.leaderboard import normalize_mods, is_valid_mod_combination
 
     selected_mods = request.GET.getlist('mods')
@@ -140,7 +190,22 @@ def quests(request):
         player = request.user.player
     except Exception:
         return redirect('/auth/logout/')
+    try:
+        # sync recent plays
+        token = get_valid_token(player)
+        recent_data = osu_services.get_recent_plays(token, player.osu_id)
+        sync_recent_plays(player, recent_data)
 
+        # sync top plays for skill baseline
+        top_data = osu_services.get_top_plays(token, player.osu_id)
+        sync_top_plays(player, top_data)
+
+        # recalculate skill baseline from top plays
+        update_skill_baseline(player)
+
+    except Exception as e:
+        print(f"Sync error: {e}")
+    
     active_quests = ensure_player_quests(player)
     return render(request, 'dashboard/quests.html', {
         'player': player,
