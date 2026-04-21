@@ -123,10 +123,10 @@ def _generate_personal_best_quest(player):
     best_play = _best_near_baseline_play(player, min_star, 100.0)  # since no upper limit
 
     if best_play:
-        name = f'Beat your best PP on a {min_star}★+ map you\'ve already played'
+        name = f'Set a PP record on a {min_star}★+ map'
         description = (
-            f'On any beatmap with adjusted star rating {min_star}★ or higher that you\'ve played before, '
-            f'set a new personal best PP score on that same map.'
+            f'Get a new personal best PP on any beatmap with adjusted star rating {min_star}★ or higher. '
+            f'Playing a map for the first time counts, as does improving your existing score.'
         )
         condition_type = 'beatmap_personal_best_pp'
         condition_value = str(min_star)
@@ -257,7 +257,7 @@ def check_quest_completion(play):
                 pp__isnull=False,
             ).exclude(pk=play.pk).order_by('-pp').first()
 
-            if not best_previous_play or play.pp <= best_previous_play.pp:
+            if best_previous_play and play.pp <= best_previous_play.pp:
                 continue
 
             progress.current_count += 1

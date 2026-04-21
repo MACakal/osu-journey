@@ -50,7 +50,7 @@ class Play(models.Model):
     mods = models.JSONField(default=list)
 
     # star rating adjusted for mods (osu! API provides this)
-    adjusted_star_rating = models.FloatField()
+    adjusted_star_rating = models.FloatField(null=True, blank=True)
 
     # timestamps
     played_at = models.DateTimeField()

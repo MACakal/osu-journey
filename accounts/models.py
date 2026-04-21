@@ -3,7 +3,12 @@ from django.contrib.auth.models import User
 
 
 class Player(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='player')
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
     
     # osu! identity
     osu_id = models.IntegerField(unique=True)
@@ -12,10 +17,9 @@ class Player(models.Model):
     avatar_image = models.ImageField(upload_to='avatars/', null=True, blank=True)
     
     # OAuth tokens
-    access_token = models.TextField()
-    refresh_token = models.TextField()
-    token_expires_at = models.DateTimeField()
-    
+    access_token = models.TextField(null=True, blank=True)
+    refresh_token = models.TextField(null=True, blank=True)
+    token_expires_at = models.DateTimeField(null=True, blank=True)
     # osu!journey progression
     xp = models.PositiveIntegerField(default=0)
     level = models.PositiveIntegerField(default=1)
