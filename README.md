@@ -128,3 +128,27 @@ http://127.0.0.1:8000/
   pip freeze > requirements.txt
   ```
 
+<div align="center">
+  <h3>Showcase</h3>
+  <p>
+    <img src="https://github.com/user-attachments/assets/0802cd37-61fe-43db-bb65-33cda5614ddb" width="45%" />
+    <img src="https://github.com/user-attachments/assets/3190b06c-6482-4e66-8c60-6f90202f6e06" width="45%" />
+  </p>
+  <p>
+    <img src="https://github.com/user-attachments/assets/f14641df-710e-42fa-95d5-9a4076c94143" width="45%" />
+    <img src="https://github.com/user-attachments/assets/b8df031f-6f3a-484e-ba62-4cabaa7a6364" width="45%" />
+  </p>
+  <p>
+    <img src="https://github.com/user-attachments/assets/8517a2f8-55df-4ec6-84d6-43c238cf18fd" width="45%" />
+    <img src="https://github.com/user-attachments/assets/4e1c8f8c-384a-4568-bca3-6453815b58c7" width="45%" />
+  </p>
+  <p>
+    <img src="https://github.com/user-attachments/assets/0b8e645d-8d82-43e0-9848-dbf3171f2765" width="45%" />
+  </p>
+</div>
+
+
+
+
+
+
